@@ -1,1 +1,0 @@
-const neighborhood= require('./neighborhoodSchema')
