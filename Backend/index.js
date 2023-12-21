@@ -26,8 +26,7 @@ mongoose.connect(connectionString, {
         const app = express()
 
 
-        //routes should be  here
-
+        //routes 
         app.use('/neighborhoods', hoodRoutes);
 
         app.all('*', (req, res) => {
