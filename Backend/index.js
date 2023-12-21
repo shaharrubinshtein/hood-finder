@@ -4,9 +4,6 @@ require('dotenv').config();
 
 const hoodRoutes = require('./routes/hoodRoutes');
 
-
-
-
 const port = 3000
 
 const { DB_USERNAME, DB_PASSWORD, DB_NAME } = process.env;
@@ -22,9 +19,7 @@ mongoose.connect(connectionString, {
     .then(() => {
         console.log('Connected to MongoDB');
 
-
         const app = express()
-
 
         //routes 
         app.use('/neighborhoods', hoodRoutes);
