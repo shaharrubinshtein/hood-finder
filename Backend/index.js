@@ -28,7 +28,7 @@ mongoose.connect(connectionString, {
 
         //routes should be  here
 
-        app.use('/neighborhood', hoodRoutes);
+        app.use('/neighborhoods', hoodRoutes);
 
         app.all('*', (req, res) => {
             res.send('not found');

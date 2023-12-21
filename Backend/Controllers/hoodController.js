@@ -1,24 +1,86 @@
 const Neighborhood = require('../Models/neigborhoodSchema');
 
-//const fs = require('fs');
+// const fs = require('fs');
 
-//load json file into mongo db - only once! 
+// //load json file into mongo db - only once! 
 // let neighborhoodData = fs.readFileSync('./db/neighborhoods_data.json');
 // console.log(neighborhoodData);
 // let neighborhoods = JSON.parse(neighborhoodData)
 // Neighborhood.insertMany(neighborhoods)
 
 
+
 //get all neighborhoods
 exports.getAllNeighborhoods = async (req, res) => {
   try {
+
     const neighborhoods = await Neighborhood.find({});
+
     if (neighborhoods) {
-        console.log("here get all-->", neighborhoods);
-        res.json({neighborhoods});
+      res.json({ neighborhoods });
     }
     else
-        res.status(404).send('not found')
+      res.status(404).send('not found')
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+// fetch all neighborhood by ageRange between min and max values - send ageRange?minAge="value"&maxAge="value"
+exports.getByAgeRange = async (req, res) => {
+  try {
+
+    let minAge = req.query.minAge
+    let maxAge = req.query.maxAge
+
+    if (!minAge || !maxAge) {
+      throw new Error("please fill a valid min and max age");
+    }
+
+    minAge = parseInt(minAge);
+    maxAge = parseInt(maxAge);
+
+    if (minAge < 0 || minAge > 120) {
+      throw new Error("please enter a valid age");
+    }
+
+    const neighborhoods = await Neighborhood.find({ $and: [{ 'average age': { $gte: minAge } }, { 'average age': { $lte: maxAge } }] });
+
+    if (neighborhoods) {
+      res.json({ neighborhoods });
+    }
+
+    else
+      res.status(404).send('not found')
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// fetch all neighborhood by max distane from city center - send maxDistance?distance="value"
+exports.getByDistance = async (req, res) => {
+  try {
+
+    let distance = req.query.distance
+
+    if (!distance) {
+      throw new Error("please fill a number");
+    }
+
+    distance = parseFloat(distance);
+
+    if (distance < 0) {
+      throw new Error("please enter a valid distance");
+    }
+
+    const neighborhoods = await Neighborhood.find({ 'distance from city center': { $lte: distance } });
+
+    if (neighborhoods) {
+      res.json({ neighborhoods });
+    }
+    else
+      res.status(404).send('not found')
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -26,39 +88,37 @@ exports.getAllNeighborhoods = async (req, res) => {
 
 
 
+// sortBy (field, order)
+exports.getSortedBy = async (req, res) => {
+  try {
 
+    let field = req.query.field
+    let order = req.query.order
 
+    order = parseInt(order);
 
+    if (!field || !order) {
+      throw new Error("please fill a field and an order[1,-1]");
+    }
 
+    if (order != 1 && order != -1) {
+      throw new Error("order value should be 1 for ascending and -1 for descending");
+    }
 
+    const neighborhoods = await Neighborhood.find({ [field]: { $exists: true } }).sort({ [field]: order });
 
+    if (neighborhoods === undefined || neighborhoods.length == 0) {
+      throw new Error("please enter a valid field");
+    }
 
+    if (neighborhoods) {
+      res.json({ neighborhoods });
+    }
 
-// Endpoint to fetch neighborhoods with filtering and sorting options
-// exports.getByAgeRange = async (req, res) => {
-//     try {
-//         let query = {};
-//         // Filtering by age range
-//         if (req.query.ageRange && Array.isArray(req.query.ageRange) && req.query.ageRange.length === 2) {
-//             const [minAge, maxAge] = req.query.ageRange.map(Number);
-//             query.averageAge = { $gte: minAge, $lte: maxAge };
-//         }
+    else
+      res.status(404).send('not found')
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
-//         //   // Filtering by maximum distance
-//         //   if (req.query.maxDistance) {
-//         //     const maxDistance = parseFloat(req.query.maxDistance);
-//         //     query.distance = { $lte: maxDistance };
-//         //   }
-
-//         //   // Sorting
-//         //   let sortQuery = {};
-//         //   if (req.query.sortBy && Array.isArray(req.query.sortBy) && req.query.sortBy.length === 2) {
-//         //     const [sortField, sortOrder] = req.query.sortBy;
-//         //     sortQuery[sortField] = sortOrder === 'asc' ? 1 : -1;
-//         //   }
-//         const neighborhoods = await neighborhoodSchema.find(query).sort(sortQuery);
-//         res.json({ neighborhoods });
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// };
