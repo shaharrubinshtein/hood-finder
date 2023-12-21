@@ -87,8 +87,7 @@ exports.getByDistance = async (req, res) => {
 };
 
 
-
-// sortBy (field, order)
+// fetch all neighborhood sorted by field and order (1 for ascending, -1 for descending) - send sortBy?field="value"&order="1"
 exports.getSortedBy = async (req, res) => {
   try {
 
