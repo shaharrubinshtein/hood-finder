@@ -1,6 +1,6 @@
 backend:
-install node modules with : npm install
-run backend: npm start
+- install node modules with : npm install
+- run backend: npm start
 
 frontend:
 - npm install
