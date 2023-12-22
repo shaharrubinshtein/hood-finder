@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const neighborhoodSchema = new mongoose.Schema({
 
-"neighborhood": {type: String},
+"neigborhood": {type: String},
 "city": {type: String},
 "state": {type: String},
 "average age": {type: Number},

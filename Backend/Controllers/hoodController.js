@@ -1,8 +1,8 @@
 const Neighborhood = require('../Models/neigborhoodSchema');
 
-// const fs = require('fs');
 
 // //load json file into mongo db - only once! 
+// const fs = require('fs');
 // let neighborhoodData = fs.readFileSync('./db/neighborhoods_data.json');
 // console.log(neighborhoodData);
 // let neighborhoods = JSON.parse(neighborhoodData)
